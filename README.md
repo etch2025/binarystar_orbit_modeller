@@ -49,9 +49,9 @@ Outputs
 
 <img width="1300" height="700" alt="image" src="Example Images/orbit_fit_best_Sirius (HD 48915)_250_5_True.png"/>
 
-<img width="500" height="300" alt="image" src="Example Images/fitted_periods_cost_Sirius (HD 48915)_250_5_True.png" />
+<img width="550" height="300" alt="image" src="Example Images/fitted_periods_cost_Sirius (HD 48915)_250_5_True.png" />
 
-<img width="500" height="300" alt="image" src="Example Images/fitted_eccents_cost_Sirius (HD 48915)_250_5_True.png" />
+<img width="550" height="300" alt="image" src="Example Images/fitted_eccents_cost_Sirius (HD 48915)_250_5_True.png" />
 
 - Future features
     - Predicted Position

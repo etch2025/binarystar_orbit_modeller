@@ -41,9 +41,9 @@ Outputs
 - Periastron Passage Year
 - Distance based off parallax (parsecs)
 - Orbital Elements
-    - Semi-Major Axis (Angular and Physical): $\a$
-    - Eccentricity: $\e$
-    - Inclination: $\i$
+    - Semi-Major Axis (Angular and Physical): $a$
+    - Eccentricity: $e$
+    - Inclination: $i$
     - Longitude of Ascending Node: $\Omega$
     - Argument of Periastron: $\omega$
     - True Anomaly: $\nu$

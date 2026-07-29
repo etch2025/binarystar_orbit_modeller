@@ -9,6 +9,10 @@ Process
 - Each orbit fit at each fixed period is compiled to a list
 - Orbits within accept_factor × best_cost and within a fraction of the estimated total mass (m_total_frac_accept) are retained.
 - Orbital elements and total mass ranges are derived through the accepted list, inputted parallax measurement and Kepler's laws
+- If no orbit fits can be accepted based on accept_factor and mass guesses
+    - The lowest cost of all the fits is saved to orbit_fit_lowest_cost.png
+- The lowest cost orbit fit in the list of accepted orbits is saved to
+    - orbit_fit_best_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}
 
 Inputs
 - CSV file with
@@ -18,6 +22,7 @@ Inputs
     - Parallax Angle (first data row only): Milliarcseconds (mas)
 - Primary Star (m1) mass guess based on spectroscopic data (optional)
 - Secondary Star (m1) mass guess based on spectroscopic data (optional)
+    - Example mass guesses in mass_guess.txt
 
 Assumptions:
 - Both stars are approximately the same distance from Earth
@@ -34,24 +39,25 @@ Example binary star data from [Stellie Doppie](https://www.stelledoppie.it/) inc
 Outputs
 - Total System Mass
 - Periastron Passage Year
-- Distance (parsecs)
+- Distance based off parallax (parsecs)
 - Orbital Elements
-    - Semi-Major Axis (Angular and Physical): a
-    - Eccentricity: e
-    - Inclination: i
+    - Semi-Major Axis (Angular and Physical): $\a$
+    - Eccentricity: $\e$
+    - Inclination: $\i$
     - Longitude of Ascending Node: $\Omega$
     - Argument of Periastron: $\omega$
     - True Anomaly: $\nu$
+    - Periastron Passage Year $\T$
 - Plots 
     - Best Fit Sky-Projected and True Orbit with component positions and elements
     - Orbital Eccentricity and Period vs Cost (Residuals)
     - Log File with range of accepted orbital elements and parameters
 
-<img width="1300" height="700" alt="image" src="Example Images/orbit_fit_best_Sirius (HD 48915)_250_5_True.png"/>
+<img width="1300" height="700" alt="image" src="Example Files/orbit_fit_best_Sirius (HD 48915)_250_10_True.png"/>
 
-<img width="500" height="350" alt="image" src="Example Images/fitted_periods_cost_Sirius (HD 48915)_250_5_True.png" />
+<img width="500" height="350" alt="image" src="Example Files/fitted_periods_cost_Sirius (HD 48915)_250_10_True.png" />
 
-<img width="500" height="350" alt="image" src="Example Images/fitted_eccents_cost_Sirius (HD 48915)_250_5_True.png" />
+<img width="500" height="350" alt="image" src="Example Files/fitted_eccents_cost_Sirius (HD 48915)_250_10_True.png" />
 
 - Future features
     - Predicted Position

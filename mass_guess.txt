@@ -2,15 +2,15 @@ StarSystem
     - primary (m1) guess (solar mass)
     - primary (m2) guess (solar mass)
 
-61 Cygni
+61 Cygni HD 201091(K5V, K7V)
     - 0.7
     - 0.64
-Kr60
+Kr60 (M3V, M4V)
     - 0.36
     - 0.24
-70oph
+70oph (K0V, K4V)
     - 0.86
     - 0.72
-Sirius
+Sirius (A1V, DA1)
     - 2.17
     - 1.00

@@ -1,20 +1,15 @@
 """
-Visual binary orbital-element solver.
-
-Fits all seven Campbell elements (P, T, e, a, i, Omega, omega) directly to
-(theta, rho, t) astrometry by modeling the true Keplerian orbit and
-projecting it onto the sky with the Thiele-Innes constants.
-
-Assumptions:
-- Both stars are approximately the same distance from Earth
-- Binding energy < 0 (orbit is elliptical)
+Visual binary orbital-element solver iterating over Thiele-Innes Method
+7/28/2026
 """
+
+import os
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
-
+import time
 
 
 # ----------------------------------------------------------------------
@@ -22,6 +17,7 @@ from scipy.optimize import least_squares
 # ----------------------------------------------------------------------
 # 0=P 1=T 2=e 3=a" 4=i 5=Omega 6=omega 7=M_total 8=cost 9=R2
 
+start_time = time.perf_counter()
 
 # Target Name
 target = "Sirius (HD 48915)"
@@ -40,15 +36,15 @@ P_lower = 1e-1 # years
 P_upper = 200  # years
 
 # --- grid-mode settings ---
-n_P_grid = 250        # number of periods to scan across [P_lower, P_upper]
+n_P_grid = 250       # number of periods to scan across [P_lower, P_upper]
 P_grid_log = False        # log-spaced grid (better when P spans decades)
-n_restarts_per_P = 5     # random restarts of the 6 free elements at each fixed P
+n_restarts_per_P = 10    # random restarts of the 6 free elements at each fixed P
 
 # Cost threshold for "acceptable" orbits, expressed as a multiple of the
 # best cost found. Orbits with cost <= accept_factor * best_cost are counted
 # as members of the acceptable family when reporting the range.
 accept_factor = 1.5 # Best
-m_total_frac_accept = 0.3 # Mass
+m_total_frac_accept = 0.2 # Mass
 
 # Inputs for period/semi-major axis constrainments based on spectroscopic data (optional)
 m1_guess = 2.17
@@ -88,14 +84,21 @@ parallax_arcsec = parallax_mas / 1000.0
 
 mass_constrain = False
 m_total_guess = None
-if (m1_guess != None and m2_guess != None):
+if (m1_guess is not None and m2_guess is not None):
     mass_constrain = True
     m_total_guess = m1_guess + m2_guess
 
-logname = f'logfiles/logfile_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.txt'
+folder_name = f'{target}_{t_obs[0]}_{t_obs[-1]}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}'
+os.makedirs(folder_name, exist_ok=True)
+
+logname = f'{folder_name}/logfile_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.txt'
 
 with open(logname, "w") as f:
-    f.write(f'Grid mode: {n_P_grid} periods in [{P_lower}, {P_upper}] yr, {n_restarts_per_P} Iterations each, Mass Constrain = {mass_constrain}\nTotal Mass Fractional Acceptance = {m_total_frac_accept}, Best Cost Accept Factor = {accept_factor}\n')
+    f.write(f'Grid mode: {n_P_grid} periods in [{P_lower}, {P_upper}] yr, {n_restarts_per_P} Iterations each, Mass Constrain = {mass_constrain}\nTotal Mass Fractional Acceptance = {m_total_frac_accept}, Best Cost Accept Factor = {accept_factor}\nPrimary Star (m1) Mass Guess: {m1_guess} MSol, Secondary Star (m2) Mass Guess: {m2_guess} MSol\n')
+
+
+
+
 
 # ----------------------------------------------------------------------
 # Kepler Equation
@@ -177,8 +180,7 @@ def plot_orbits(P, T, e, a, i, Omega, omega, M_total, cost, r_squared, index):
     ax1.scatter(0, 0, color="red", s=180, marker="o", label="Primary",
                 zorder=7)
 
-    # Plot Secondary Star at last observation
-    # Axis convention: x-axis = East (y_obs), y-axis = North (x_obs)
+
     ax1.scatter(x_obs[-1], y_obs[-1], color="orange", s=120, marker="o",
                 label="Secondary", zorder=6)
 
@@ -281,12 +283,7 @@ def plot_orbits(P, T, e, a, i, Omega, omega, M_total, cost, r_squared, index):
     ax2.set_xlabel("X (AU)")
     ax2.set_ylabel("Y (AU)")
 
-    if (T < t_obs[0]):
-        while T <= t_obs[0]:
-            T += P
-    elif (T > t_obs[0]):
-        while T >= t_obs[0]:
-            T -= P
+    T = t_obs[0] - np.mod(t_obs[0] - T, P)
 
     fig.suptitle(
         f'{target}\n'
@@ -310,18 +307,16 @@ def plot_orbits(P, T, e, a, i, Omega, omega, M_total, cost, r_squared, index):
         , fontsize = 9
     )
 
-    fig.savefig(f'Fitted Orbits/orbit_fit{index}.png', dpi=200, bbox_inches='tight')
-    # print(f"    Plot saved to Fitted Orbits/orbit_fit{index}.png")
+    fig.savefig(f'{folder_name}/orbit_fit{index}.png', dpi=200, bbox_inches='tight')
+    
     with open(logname, "a") as f:
-        f.write(f'Plot saved to Fitted Orbits/orbit_fit{index}.png\n')
+        f.write(f'Plot saved to orbit_fit{index}.png\n')
     plt.close(fig)
 # ----------------------------------------------------------------------
 # Fit: multi-start nonlinear least squares
 # ----------------------------------------------------------------------
-
 d_pc = 1.0 / parallax_arcsec
 
-obs = np.concatenate([x_obs, y_obs])
 ss_tot = np.sum((x_obs - x_obs.mean())**2) + np.sum((y_obs - y_obs.mean())**2)
 
 
@@ -398,14 +393,13 @@ for gi, P_fixed in enumerate(P_values):
           f'a = {row[3]:.3f}"  e = {row[2]:.3f}  '
           f'M = {row[7]:.3f} Msun  cost = {row[8]}')"""
     with open(logname, "a") as f:
-        f.write(f'  [{gi+1}/{n_P_grid}] P = {P_fixed:8.2f} yr, a" = {row[3]:.3f}  e = {row[2]:.3f}, M = {row[7]:.3f} Msun  cost = {row[8]}\n')
+        f.write(f'  [{gi+1}/{n_P_grid}] P = {P_fixed:8.2f} yr, a = {row[3]:.3f}"  e = {row[2]:.3f}, M = {row[7]:.3f} Msun  cost = {row[8]}\n')
 
     if bool_plot_orbits:
         # row cols: 0=P 1=T 2=e 3=a" 4=i(deg) 5=Omega(deg) 6=omega(deg)
         #           7=M_total 8=cost 9=R2   -- plot_orbits converts angles.
         P, T, e, a, i, Omega, omega, M_Total, cost, r2 = row
         plot_orbits(P, T, e, a, i, Omega, omega, M_Total, cost, r2, f'_{P_fixed:.2f}')
-
 
 if not fitted_values:
     raise RuntimeError("No successful fits — check data and bounds.")
@@ -431,11 +425,17 @@ if (mass_constrain == True):
 if len(accept) == 0:
     with open(logname, "a") as f:
         f.write(f'No orbits pass the cost + mass constraints. Widen accept_factor or m_total_frac_accept.\n')
-    raise RuntimeError("No orbits pass the cost + mass constraints; "
-                       "widen accept_factor or m_total_frac_accept.")
+    best_accept_idx = best_idx
+    best_accept_fit = fitted_values[best_accept_idx]
+    # Then plot lowest cost orbit
+    P, T, e, a, i, Omega, omega, M_total, cost, r_squared = best_accept_fit
+    plot_orbits(P, T, e, a, i, Omega, omega, M_total, cost, r_squared, "_lowest_cost")
 
-best_accept_idx = int(np.argmin(accept[:, 8]))
-best_accept_fit = accept[best_accept_idx]
+    # raise RuntimeError("No orbits pass the cost + mass constraints; "
+    #                    "widen accept_factor or m_total_frac_accept. Plotting lowest cost found.")
+else:
+    best_accept_idx = int(np.argmin(accept[:, 8]))
+    best_accept_fit = accept[best_accept_idx]
 
 # print('-' * 55)
 if (mass_constrain == True):
@@ -453,13 +453,14 @@ else:
 
 labels = ['P (yr)', 'T (yr)', 'e', f'a ({unit})', 'i (deg)',
           'Omega (deg)', 'omega (deg)', 'M_tot (Msun)']
-for c, lab in enumerate(labels):
-    col = accept[:, c]
-    """print(f'  {lab:14s} range [{col.min():10.3f}, {col.max():10.3f}]  '
-          f'median {np.median(col):10.3f}')"""
-    with open(logname, "a") as f:
-        f.write(f'  {lab:14s} range [{col.min():10.3f}, {col.max():10.3f}]  '
-          f'median {np.median(col):10.3f}\n')
+if len(accept) != 0:
+    for c, lab in enumerate(labels):
+        col = accept[:, c]
+        """print(f'  {lab:14s} range [{col.min():10.3f}, {col.max():10.3f}]  '
+            f'median {np.median(col):10.3f}')"""
+        with open(logname, "a") as f:
+            f.write(f'  {lab:14s} range [{col.min():10.3f}, {col.max():10.3f}]  '
+            f'median {np.median(col):10.3f}\n')
 
 
 # -----------------------------------------------------------------
@@ -498,10 +499,10 @@ ax.set_yscale('log')
 if P_grid_log:
     ax.set_xscale('log')
 plt.legend(fontsize=8)
-plt.savefig(f"Fitted Orbits/fitted_periods_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png", dpi=200, bbox_inches='tight')
+plt.savefig(f"{folder_name}/fitted_periods_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png", dpi=200, bbox_inches='tight')
 #print(f"Cost vs Period graph saved to Fitted Orbits/fitted_periods_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png")
 with open(logname, "a") as f:
-    f.write(f"Cost vs Period graph saved to Fitted Orbits/fitted_periods_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png\n")
+    f.write(f"Cost vs Period graph saved to fitted_periods_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png\n")
 
 plt.close()
 # -----------------------------------------------------------------
@@ -541,16 +542,29 @@ ax.set_yscale('log')
 if P_grid_log:
     ax.set_xscale('log')
 plt.legend(fontsize=8)
-plt.savefig(f"Fitted Orbits/fitted_eccents_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png", dpi=200, bbox_inches='tight')
+plt.savefig(f"{folder_name}/fitted_eccents_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png", dpi=200, bbox_inches='tight')
 # print(f"Cost vs Eccentricity graph saved to Fitted Orbits/fitted_eccents_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png")
 with open(logname, "a") as f:
-    f.write(f"Cost vs Eccentricity graph saved to Fitted Orbits/fitted_eccents_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png\n")
+    f.write(f"Cost vs Eccentricity graph saved to fitted_eccents_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png\n")
 
 plt.close()
 
-# Plot best orbit from accept list
 
-P, T, e, a, i, Omega, omega, M_total, cost, r_squared = best_accept_fit
-plot_orbits(P, T, e, a, i, Omega, omega, M_total, cost, r_squared, f'_best_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}')
+if len(accept) != 0:
+    # Plot best orbit from accept list
+    P, T, e, a, i, Omega, omega, M_total, cost, r_squared = best_accept_fit
+    plot_orbits(P, T, e, a, i, Omega, omega, M_total, cost, r_squared, f'_best_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}')
 
-print(f'Orbit Fits Finished')
+
+with open(logname, "a") as f:
+    f.write(f"All files saved to {folder_name}\n")
+
+
+end_time = time.perf_counter()
+total_time = end_time - start_time
+minutes, seconds = divmod(total_time, 60)
+
+with open(logname, "a") as f:
+    f.write(f'Runtime: {minutes} min, {seconds:.2f} sec')
+
+print(f'Modelling Complete')

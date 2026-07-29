@@ -53,7 +53,7 @@ Outputs
     - Orbital Eccentricity and Period vs Cost (Residuals)
     - Log File with range of accepted orbital elements and parameters
 
-<img width="1300" height="700" alt="image" src="Example Files/orbit_fit_best_Sirius (HD 48915)_250_1000_True.png"/>
+<img width="1300" height="700" alt="image" src="Example Files/orbit_fit_best_Sirius (HD 48915)_1000_10_True.png"/>
 
 <img width="500" height="350" alt="image" src="Example Files/fitted_periods_cost_Sirius (HD 48915)_1000_10_True.png" />
 

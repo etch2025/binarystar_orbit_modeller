@@ -36,7 +36,7 @@ P_lower = 1e-1 # years
 P_upper = 200  # years
 
 # --- grid-mode settings ---
-n_P_grid = 1000      # number of periods to scan across [P_lower, P_upper]
+n_P_grid = 100      # number of periods to scan across [P_lower, P_upper]
 P_grid_log = False        # log-spaced grid (better when P spans decades)
 n_restarts_per_P = 10    # random restarts of the 6 free elements at each fixed P
 

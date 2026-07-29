@@ -36,7 +36,7 @@ P_lower = 1e-1 # years
 P_upper = 200  # years
 
 # --- grid-mode settings ---
-n_P_grid = 250       # number of periods to scan across [P_lower, P_upper]
+n_P_grid = 1000      # number of periods to scan across [P_lower, P_upper]
 P_grid_log = False        # log-spaced grid (better when P spans decades)
 n_restarts_per_P = 10    # random restarts of the 6 free elements at each fixed P
 
@@ -44,7 +44,7 @@ n_restarts_per_P = 10    # random restarts of the 6 free elements at each fixed 
 # best cost found. Orbits with cost <= accept_factor * best_cost are counted
 # as members of the acceptable family when reporting the range.
 accept_factor = 1.5 # Best
-m_total_frac_accept = 0.2 # Mass
+m_total_frac_accept = 0.1 # Mass
 
 # Inputs for period/semi-major axis constrainments based on spectroscopic data (optional)
 m1_guess = 2.17
@@ -476,12 +476,12 @@ plt.xlabel("Orbital Period (yr)")
 plt.ylabel("Cost")
 
 if mass_constrain == False:
-    plt.title(f'{target}\n'
+    plt.title(f'{target} | {t_obs[0]} - {t_obs[-1]}\n'
         f'mode = {fit_mode} | {len(fitted_values)} Orbit Fits, {n_restarts_per_P} Iterations, Mass Constrain = {mass_constrain}\n'
         f'{len(accept)}/{len(fitted_values)} Accepted, Cost $\\leq$ {accept_factor * best_cost}\n'
         f'{P_lower} $\\leq$ P $\\leq$ {P_upper}')
 else:
-    plt.title(f'{target}\n'
+    plt.title(f'{target} | {t_obs[0]} - {t_obs[-1]}\n'
                   f'mode = {fit_mode} | {len(fitted_values)} Orbit Fits, {n_restarts_per_P} Iterations, Mass Constrain = {mass_constrain}\n'
                   f'{len(accept)}/{len(fitted_values)} Accepted, Cost $\\leq$ {accept_factor * best_cost}\n'
                   f'{P_lower} $\\leq$ P $\\leq$ {P_upper}, {(1-m_total_frac_accept) *  m_total_guess:.3f} M$_\\odot$ $\\leq$ $M_{{total}}$ $\\leq$ {(1+m_total_frac_accept) *  m_total_guess:.3f} M$_\\odot$')
@@ -518,12 +518,12 @@ plt.figure(figsize=(10, 6))
 plt.xlabel("Eccentricity")
 plt.ylabel("Cost")
 if mass_constrain == False:
-        plt.title(f'{target}\n'
+        plt.title(f'{target} | {t_obs[0]} - {t_obs[-1]}\n'
               f'mode = {fit_mode} | {len(fitted_values)} Orbit Fits, {n_restarts_per_P} Iterations, Mass Constrain = {mass_constrain}\n'
               f'{len(accept)}/{len(fitted_values)} Accepted, Cost $\\leq$ {accept_factor * best_cost}\n'
               f'{P_lower} $\\leq$ P $\\leq$ {P_upper}')
 else:
-        plt.title(f'{target}\n'
+        plt.title(f'{target} | {t_obs[0]} - {t_obs[-1]}\n'
                       f'mode = {fit_mode} | {len(fitted_values)} Orbit Fits, {n_restarts_per_P} Iterations, Mass Constrain = {mass_constrain}\n'
                       f'{len(accept)}/{len(fitted_values)} Accepted, Cost $\\leq$ {accept_factor * best_cost}\n'
                       f'{P_lower} $\\leq$ P $\\leq$ {P_upper}, {(1-m_total_frac_accept) *  m_total_guess:.3f} M$_\\odot$ $\\leq$ $M_{{total}}$ $\\leq$ {(1+m_total_frac_accept) *  m_total_guess:.3f} M$_\\odot$')

@@ -47,7 +47,7 @@ Outputs
     - Longitude of Ascending Node: $\Omega$
     - Argument of Periastron: $\omega$
     - True Anomaly: $\nu$
-    - Periastron Passage Year $\T$
+    - Periastron Passage Year $T$
 - Plots 
     - Best Fit Sky-Projected and True Orbit with component positions and elements
     - Orbital Eccentricity and Period vs Cost (Residuals)

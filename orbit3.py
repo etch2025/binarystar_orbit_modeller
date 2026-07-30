@@ -20,9 +20,9 @@ import time
 start_time = time.perf_counter()
 
 # Target Name
-target = "Sirius (HD 48915)"
+target = "Kruger 60 (DO Cephei)"
 unit = '"' # arcsec
-csv_file = "csv data/test.csv"
+csv_file = "csv data/kr60.csv"
 
 # Fitting mode:
 #   "grid"  -> scan P over a grid; at each fixed P fit the other 6 elements.
@@ -33,22 +33,22 @@ fit_mode = "grid"
 bool_plot_orbits = False
 
 P_lower = 1e-1 # years
-P_upper = 200  # years
+P_upper = 120  # years
 
 # --- grid-mode settings ---
-n_P_grid = 100      # number of periods to scan across [P_lower, P_upper]
+n_P_grid = 20      # number of periods to scan across [P_lower, P_upper]
 P_grid_log = False        # log-spaced grid (better when P spans decades)
-n_restarts_per_P = 10    # random restarts of the 6 free elements at each fixed P
+n_restarts_per_P = 5    # random restarts of the 6 free elements at each fixed P
 
 # Cost threshold for "acceptable" orbits, expressed as a multiple of the
 # best cost found. Orbits with cost <= accept_factor * best_cost are counted
 # as members of the acceptable family when reporting the range.
 accept_factor = 1.5 # Best
-m_total_frac_accept = 0.1 # Mass
+m_total_frac_accept = 0.25 # Mass
 
 # Inputs for period/semi-major axis constrainments based on spectroscopic data (optional)
-m1_guess = 2.17
-m2_guess = 1.00
+m1_guess = 0.30
+m2_guess = 0.20
 
 # ----------------------------------------------------------------------
 #          P (yr)   T (yr)   e    a (")  i      Omega  omega

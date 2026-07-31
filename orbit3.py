@@ -36,9 +36,9 @@ P_lower = 1e-1 # years
 P_upper = 120  # years
 
 # --- grid-mode settings ---
-n_P_grid = 20      # number of periods to scan across [P_lower, P_upper]
+n_P_grid = 1000      # number of periods to scan across [P_lower, P_upper]
 P_grid_log = False        # log-spaced grid (better when P spans decades)
-n_restarts_per_P = 5    # random restarts of the 6 free elements at each fixed P
+n_restarts_per_P = 10   # random restarts of the 6 free elements at each fixed P
 
 # Cost threshold for "acceptable" orbits, expressed as a multiple of the
 # best cost found. Orbits with cost <= accept_factor * best_cost are counted

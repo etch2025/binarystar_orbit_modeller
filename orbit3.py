@@ -20,9 +20,9 @@ import time
 start_time = time.perf_counter()
 
 # Target Name
-target = "Kruger 60 (DO Cephei)"
+target = "Sirius (HD 48915)"
 unit = '"' # arcsec
-csv_file = "csv data/kr60.csv"
+csv_file = "csv data/test.csv"
 
 # Fitting mode:
 #   "grid"  -> scan P over a grid; at each fixed P fit the other 6 elements.
@@ -44,22 +44,17 @@ n_restarts_per_P = 10   # random restarts of the 6 free elements at each fixed P
 # best cost found. Orbits with cost <= accept_factor * best_cost are counted
 # as members of the acceptable family when reporting the range.
 accept_factor = 1.5 # Best
-m_total_frac_accept = 0.25 # Mass
+m_total_frac_accept = 0.1 # Mass
 
 # Inputs for period/semi-major axis constrainments based on spectroscopic data (optional)
-m1_guess = 0.30
-m2_guess = 0.20
+m1_guess = 2.17
+m2_guess = 1.00
 
 # ----------------------------------------------------------------------
 #          P (yr)   T (yr)   e    a (")  i      Omega  omega
 lower = [P_lower, 0.0, 0.0, 1e-3, 0.0, 0.0, 0.0]
 upper = [P_upper, 3000.0, 0.999, 100.0, np.pi, 2*np.pi, 2*np.pi]
 
-# ----------------------------------------------------------------------
-
-# Constants (DO NOT CHANGE)
-M_Sun = 1.98847e30  # kg
-AU = 1.495978707e11  # m
 # ----------------------------------------------------------------------
 
 
@@ -222,7 +217,7 @@ def plot_orbits(P, T, e, a, i, Omega, omega, M_total, cost, r_squared, index):
         node_y = np.array([-1 * a, 1 * a]) * np.sin(Omega) * 1.2
     ax1.plot(node_x, node_y, "--", color="gray", lw=0.8, label="Line of nodes", zorder = 2)
 
-    # Plot Sky-Projected Orbit Fit  (x-axis = East, y-axis = North)
+
     ax1.plot(x_fit, y_fit, "k-", lw=1.2, zorder=1)
 
 
@@ -370,7 +365,7 @@ def record(sol):
 # ----------------------------------------------------------------------
 # Fit
 # ----------------------------------------------------------------------
-rng = np.random.default_rng()
+rng = np.random.default_rng(42)
 fitted_values = []
 
 if P_grid_log:
@@ -508,12 +503,49 @@ plt.close()
 # -----------------------------------------------------------------
 
 
+orbital_sma = fitted_values[:, 3].tolist()
+orbital_sma_accepted = accept[:, 3].tolist()
+
+# Plot cost vs semi-major axis in unit specified
+plt.figure(figsize=(10, 6))
+plt.xlabel(f"Semi-Major Axis ({unit})")
+plt.ylabel("Cost")
+if mass_constrain == False:
+        plt.title(f'{target} | {t_obs[0]} - {t_obs[-1]}\n'
+              f'mode = {fit_mode} | {len(fitted_values)} Orbit Fits, {n_restarts_per_P} Iterations, Mass Constrain = {mass_constrain}\n'
+              f'{len(accept)}/{len(fitted_values)} Accepted, Cost $\\leq$ {accept_factor * best_cost}\n'
+              f'{P_lower} $\\leq$ P $\\leq$ {P_upper}')
+else:
+        plt.title(f'{target} | {t_obs[0]} - {t_obs[-1]}\n'
+                      f'mode = {fit_mode} | {len(fitted_values)} Orbit Fits, {n_restarts_per_P} Iterations, Mass Constrain = {mass_constrain}\n'
+                      f'{len(accept)}/{len(fitted_values)} Accepted, Cost $\\leq$ {accept_factor * best_cost}\n'
+                      f'{P_lower} $\\leq$ P $\\leq$ {P_upper}, {(1-m_total_frac_accept) *  m_total_guess:.3f} M$_\\odot$ $\\leq$ $M_{{total}}$ $\\leq$ {(1+m_total_frac_accept) *  m_total_guess:.3f} M$_\\odot$')
+plt.scatter(orbital_sma, costs, c="tab:blue", s=30, alpha=0.7, marker="x",
+            label="Modeled Orbits")
+plt.scatter(orbital_sma_accepted, accept_costs, c="tab:red", s=30, alpha=0.7, marker="x",
+            label="Accepted Orbits")
+
+plt.axhline(accept_factor * best_cost, color="tab:red", ls="--", lw=1,
+            label=f"Accept = {accept_factor}x Best Cost")
+plt.axvline(best_accept_fit[3], color="tab:green", ls=":", lw=1,
+            label=f"Best Semi-Major Axis = {best_accept_fit[3]}{unit}")
+
+ax = plt.gca()
+ax.set_yscale('log')
+if P_grid_log:
+    ax.set_xscale('log')
+plt.legend(fontsize=8)
+plt.savefig(f"{folder_name}/fitted_sma_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png", dpi=200, bbox_inches='tight')
+# print(f"Cost vs Eccentricity graph saved to Fitted Orbits/fitted_eccents_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png")
+with open(logname, "a") as f:
+    f.write(f"Cost vs Semi-Major Axis graph saved to fitted_sma_cost_{target}_{n_P_grid}_{n_restarts_per_P}_{mass_constrain}.png\n")
+
+plt.close()
 
 orbital_eccents = fitted_values[:, 2].tolist()
 orbital_eccents_accepted = accept[:,2].tolist()
 
 # Plot cost vs eccentricity
-# Plot cost vs Period: the key degeneracy diagnostic.
 plt.figure(figsize=(10, 6))
 plt.xlabel("Eccentricity")
 plt.ylabel("Cost")
@@ -536,6 +568,7 @@ plt.axhline(accept_factor * best_cost, color="tab:red", ls="--", lw=1,
             label=f"Accept = {accept_factor}x Best Cost")
 plt.axvline(best_accept_fit[2], color="tab:green", ls=":", lw=1,
             label=f"Best Eccentricity = {best_accept_fit[2]}")
+
 
 ax = plt.gca()
 ax.set_yscale('log')

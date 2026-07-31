@@ -50,12 +50,16 @@ Outputs
     - Periastron Passage Year $T$
 - Plots 
     - Best Fit Sky-Projected and True Orbit with component positions and elements
-    - Orbital Eccentricity and Period vs Cost (Residuals)
+    - Orbital Period vs Cost
+    - Orbital Semi-Major Axis (angular) vs Cost
+    - Orbital Eccentricity vs Cost 
     - Log File with range of accepted orbital elements and parameters
 
 <img width="1300" height="700" alt="image" src="Example Files/orbit_fit_best_Sirius (HD 48915)_1000_10_True.png"/>
 
 <img width="500" height="350" alt="image" src="Example Files/fitted_periods_cost_Sirius (HD 48915)_1000_10_True.png" />
+
+<img width="500" height="350" alt="image" src="Example Files/fitted_sma_cost_Sirius (HD 48915)_1000_10_True.png" />
 
 <img width="500" height="350" alt="image" src="Example Files/fitted_eccents_cost_Sirius (HD 48915)_1000_10_True.png" />
 

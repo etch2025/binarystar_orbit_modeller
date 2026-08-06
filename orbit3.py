@@ -36,7 +36,7 @@ P_lower = 1e-1 # years
 P_upper = 120  # years
 
 # --- grid-mode settings ---
-n_P_grid = 1000      # number of periods to scan across [P_lower, P_upper]
+n_P_grid = 100      # number of periods to scan across [P_lower, P_upper]
 P_grid_log = False        # log-spaced grid (better when P spans decades)
 n_restarts_per_P = 10   # random restarts of the 6 free elements at each fixed P
 
@@ -47,8 +47,8 @@ accept_factor = 1.5 # Best
 m_total_frac_accept = 0.1 # Mass
 
 # Inputs for period/semi-major axis constrainments based on spectroscopic data (optional)
-m1_guess = None # 2.17
-m2_guess = None # 1.00
+m1_guess = 2.17 
+m2_guess = 1.00 
 
 # ----------------------------------------------------------------------
 #          P (yr)   T (yr)   e    a (")  i      Omega  omega

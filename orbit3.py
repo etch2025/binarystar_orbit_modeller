@@ -20,9 +20,9 @@ import time
 start_time = time.perf_counter()
 
 # Target Name
-target = "Kruger 60 (DO Cephei)"
+target = "Sirius (a CMa, WDS J06451–1643)"
 unit = '"' # arcsec
-csv_file = "csv data/kr60_data.csv"
+csv_file = "csv data/sirius_data.csv"
 
 # Fitting mode:
 #   "grid"  -> scan P over a grid; at each fixed P fit the other 6 elements.
@@ -36,7 +36,7 @@ P_lower = 1e-1 # years
 P_upper = 120  # years
 
 # --- grid-mode settings ---
-n_P_grid = 5000      # number of periods to scan across [P_lower, P_upper]
+n_P_grid = 1000      # number of periods to scan across [P_lower, P_upper]
 P_grid_log = False        # log-spaced grid (better when P spans decades)
 n_restarts_per_P = 10   # random restarts of the 6 free elements at each fixed P
 

@@ -5010,9 +5010,9 @@ ACCEPTABLE ORBITS  (cost <= 0.044071292813507704): 3446 of 5000 orbits
   Omega (deg)    range [     0.324,    359.726]  median    130.752
   omega (deg)    range [     0.005,    360.000]  median    180.276
   M_tot (Msun)   range [     0.477,   3934.510]  median      0.508
-Cost vs Period graph saved to fitted_periods_cost_Kruger 60 (DO Cephei)_5000_10_False.png
-Cost vs Semi-Major Axis graph saved to fitted_sma_cost_Kruger 60 (DO Cephei)_5000_10_False.png
-Cost vs Eccentricity graph saved to fitted_eccents_cost_Kruger 60 (DO Cephei)_5000_10_False.png
-Plot saved to orbit_fit_best_Kruger 60 (DO Cephei)_5000_10_False.png
-All files saved to Kruger 60 (DO Cephei)_2007.0_2023.0_5000_10_False
-Runtime: 56.0 min, 15.07 sec
+Cost vs Period graph saved to fitted_periods_cost_Kruger 60 (DO Cephei, WDS J22280+5742)_5000_10_False.png
+Cost vs Semi-Major Axis graph saved to fitted_sma_cost_Kruger 60 (DO Cephei, WDS J22280+5742)_5000_10_False.png
+Cost vs Eccentricity graph saved to fitted_eccents_cost_Kruger 60 (DO Cephei, WDS J22280+5742)_5000_10_False.png
+Plot saved to orbit_fit_best_Kruger 60 (DO Cephei, WDS J22280+5742)_5000_10_False.png
+All files saved to Kruger 60 (DO Cephei, WDS J22280+5742)_2007.0_2023.0_5000_10_False
+Runtime: 57.0 min, 23.18 sec

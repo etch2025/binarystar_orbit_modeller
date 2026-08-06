@@ -55,13 +55,13 @@ Outputs
     - Orbital Eccentricity vs Cost 
     - Log File with range of accepted orbital elements and parameters
 
-<img width="1300" height="700" alt="image" src="Example Files/orbit_fit_best_Kruger 60 (DO Cephei)_5000_10_False.png"/>
+<img width="1300" height="700" alt="image" src="Example Files/orbit_fit_best_Kruger 60 (DO Cephei, WDS J22280+5742)_5000_10_False.png"/>
 
-<img width="500" height="350" alt="image" src="Example Files/fitted_periods_cost_Kruger 60 (DO Cephei)_5000_10_False.png" />
+<img width="500" height="350" alt="image" src="Example Files/fitted_periods_cost_Kruger 60 (DO Cephei, WDS J22280+5742)_5000_10_False.png" />
 
-<img width="500" height="350" alt="image" src="Example Files/fitted_sma_cost_Kruger 60 (DO Cephei)_5000_10_False.png" />
+<img width="500" height="350" alt="image" src="Example Files/fitted_sma_cost_Kruger 60 (DO Cephei, WDS J22280+5742)_5000_10_False.png" />
 
-<img width="500" height="350" alt="image" src="Example Files/fitted_eccents_cost_Kruger 60 (DO Cephei)_5000_10_False.png" />
+<img width="500" height="350" alt="image" src="Example Files/fitted_eccents_cost_Kruger 60 (DO Cephei, WDS J22280+5742)_5000_10_False.png" />
 
 - Future features
     - Predicted Position
